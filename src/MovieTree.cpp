@@ -1,6 +1,6 @@
 #include<iostream>
 #include<string>
-#include<json/son.h>
+#include"/usr/include/json-c/json.h"
 #include "../include/MovieTree.h"
 
 
@@ -152,7 +152,7 @@ MovieNode* MovieTree::minimum(MovieNode* n)
 }
 
 //max from root (whole tree)
-MovieNode* MovieTree::maximum()	
+MovieNode* MovieTree::maximum()
 {
 	MovieNode* n = root;		//mirror of minimum, as is the nature of binary
 	while (n->right != nullptr)

@@ -2,7 +2,7 @@
 #define MOVIETREE_H
 
 #include<string>
-#include<json/json.h>
+#include"/usr/include/json-c/json.h"
 
 struct MovieNode
 {
@@ -44,10 +44,10 @@ public:
 
 	void initJson();
 	json_object* getJsonObject();
-	
+
 
 private:
-	
+
 	int operations;
 	MovieNode *root;
 	json_object* Assignment6Output;
@@ -55,7 +55,7 @@ private:
 	int nodeCount();
 
 	void inorder_walk(MovieNode*);			//internal reccursive call
-	MovieNode* search(MovieNode*, std::string&);//recursive, and sub-tree version of search 
+	MovieNode* search(MovieNode*, std::string&);//recursive, and sub-tree version of search
 	MovieNode* minimum(MovieNode*);			//find min of specified sub-tree
 	MovieNode* maximum(MovieNode*);			//find max of specified sub-node
 	MovieNode* successor(MovieNode*);		//next incriment
