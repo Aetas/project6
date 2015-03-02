@@ -2,6 +2,7 @@
 #define MOVIETREE_H
 
 #include<string>
+#include<json/json.h>
 
 struct MovieNode
 {
@@ -41,8 +42,17 @@ public:
 	MovieNode* minimum();					//find min (up for debate wether or not these should be private)
 	MovieNode* maximum();					//find max (^*************************************************^)
 
+	void initJson();
+	json_object* getJsonObject();
+	
+
 private:
+	
+	int operations;
 	MovieNode *root;
+	json_object* Assignment6Output;
+
+	int nodeCount();
 
 	void inorder_walk(MovieNode*);			//internal reccursive call
 	MovieNode* search(MovieNode*, std::string&);//recursive, and sub-tree version of search 
@@ -53,6 +63,7 @@ private:
 	void transplant(MovieNode*, MovieNode*);//switches dangling trees on a parent
 	void delete_node(MovieNode*);			//removes a node
 	void delete_tree(MovieNode*);			//delete whole tree. Not purely in ~MovieTree() because it was easier to debugg.
+
 };
 
 #endif // MOVIETREE_H

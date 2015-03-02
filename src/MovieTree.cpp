@@ -1,6 +1,8 @@
 #include<iostream>
 #include<string>
-#include "MovieTree.h"
+#include<json/son.h>
+#include "../include/MovieTree.h"
+
 
 //******************
 //-FREEEEEBIRD-
@@ -56,6 +58,7 @@ MovieNode::~MovieNode()
 MovieTree::MovieTree()
 {
 	root = nullptr;
+	operations = 0;
 }
 
 //default destructs
