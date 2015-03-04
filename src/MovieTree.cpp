@@ -1,6 +1,6 @@
 #include<iostream>
 #include<string>
-#include"/usr/include/json-c/json.h"
+#include"json-c/json.h"
 #include "../include/MovieTree.h"
 
 
