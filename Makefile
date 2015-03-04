@@ -4,13 +4,11 @@
 CC = g++
 CPPFLAGS = -Wall -Werror -std=c++0x I
 OBJ = main.o functions.o
-OUTPUT = Assignment6.o
+OUTPUT = main.o
 ODIR = ./bin
 
 vpath = %.h ./include
 vpath = %.cpp ./src
-#JSON_LIB = -l json
-#LIBS = -ljson-c
 
 JSON_C_DIR=/usr
 CPPFLAGS += -I$(JSON_C_DIR)/include/json-c
@@ -19,11 +17,11 @@ LDFLAGS+= -L$(JSON_C_DIR)/lib -ljson-c
 program: $(OBJ)
 	$(CC) $(CPPFLAGS) $(OBJ) -o $(ODIR)/$(OUTPUT) $(LDFLAGS)
 
-main.o : Assignment6.cpp MovieTree.h
-	$(CC) $(CPPFLAGS) -c main.o $(LDFLAGS)
+main.o : ./src/Assignment6.cpp ./include/MovieTree.h
+	$(CC) $(CPPFLAGS) -c $(LDFLAGS)
 
-functions.o : MovieTree.cpp MovieTree.h
-	$(CC) $(CPPFLAGS) -c functions.o $(LDFLAGS)
+functions.o : ./src/MovieTree.cpp ./include/MovieTree.h
+	$(CC) $(CPPFLAGS) -c $(LDFLAGS)
 
 .PHONY : clean
 clean :
