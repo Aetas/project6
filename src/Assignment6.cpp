@@ -10,6 +10,7 @@
 #include<fstream>
 #include<string>
 #include"MovieTree.h"
+#include<json-c/json.h>
 
 using std::cin;
 using std::cout;
@@ -49,37 +50,25 @@ int main(int argc, char* argv[])
 		//could also -> while(!in_file.is_open()) {...requent new input... open()}
 	}
 	in_file.close();
-
+    int size;
 	int select = -1;
 	MovieNode* temp = nullptr;
-	while (select != 4)
+	json_object* jstring;
+	json_object* jwrapper;
+	int key = 1;
+	while (select != 5)
 	{
 		string title = "";
 		cout << "======Main Menu=====" << endl
-			<< "1. Find a movie" << endl
-			<< "2. Rent a movie" << endl
-			<< "3. Print the inventory" << endl
-			<< "4. Quit" << endl;
+			<< "1. Rent a movie" << endl
+			<< "2. Print the inventory" << endl
+			<< "3. Delete a movie" << endl
+			<< "4. Count movies in tree" << endl
+			<< "5. Quit" << endl;
 		cin >> select;
 		switch (select)
 		{
-		case 1:	//find a movie
-			cout << "Enter title:";
-			cin >> title;
-			temp = database->search(title);
-			if (temp == NULL)
-			{
-				cout << "Movie not found." << endl;
-				break;
-			}
-			cout << "Movie Info:" << endl
-				<< "===========" << endl
-				<< "Ranking:" << temp->ranking << endl
-				<< "Title:" << temp->title << endl
-				<< "Year:" << temp->year << endl
-				<< "Quantity:" << temp->quantity << endl;
-			break;
-		case 2:	//rent a movie
+		case 1:	//rent a movie
 			cout << "Enter title:";
 			cin >> title;
 			temp = database->search(title);
@@ -102,11 +91,26 @@ int main(int argc, char* argv[])
 				<< "Title:" << temp->title << endl
 				<< "Year:" << temp->year << endl
 				<< "Quantity:" << temp->quantity << endl;
+            if (temp->quantity == 0)
+                database->delete_node(temp);
 			break;
-		case 3:	//print inventory
+		case 2:	//print inventory
 			database->inorder_walk();
 			break;
-		case 4:
+        case 3: //delete a movie
+            cout << "Enter title:";
+			cin >> title;
+			temp = database->search(title);
+			if (temp == NULL || temp = nullptr)
+			{
+				cout << "Movie not found." << endl;
+				break;
+			}
+			database->delete_node(temp);
+			break;
+        case 4: //count movies in tree
+            size = database->getTreeSize();
+		case 5:
 			cout << "Goodbye!" << endl;
 			break;
 		default://not an option
@@ -114,8 +118,30 @@ int main(int argc, char* argv[])
 			break;
 		}
 	}
+	ostream out_file("Assignment6Output.txt");
+	out_file << database->getJsonObject();
 	if (temp != nullptr)
 		delete temp;
 	delete database;
 	return 0;
 }
+
+/* Old find movie menu option;
+
+			cout << "Enter title:";
+			cin >> title;
+			temp = database->search(title);
+			if (temp == NULL)
+			{
+				cout << "Movie not found." << endl;
+				break;
+			}
+			cout << "Movie Info:" << endl
+				<< "===========" << endl
+				<< "Ranking:" << temp->ranking << endl
+				<< "Title:" << temp->title << endl
+				<< "Year:" << temp->year << endl
+				<< "Quantity:" << temp->quantity << endl;
+			break;
+
+*/

@@ -34,6 +34,7 @@ public:
 	void addRawNode(int&, std::string&, int&, int&);
 	void insert(MovieNode*);				//adds a new node
 	void insert(MovieNode*, MovieNode*);	//adds a new node to a specified sub tree
+	void delete_node(MovieNode*);			//removes a node - now public because of menu option
 
 	void inorder_walk();					//external call to root
 	MovieNode* search(std::string&);		//finds node with the passed key
@@ -41,17 +42,25 @@ public:
 	MovieNode* minimum();					//find min (up for debate wether or not these should be private)
 	MovieNode* maximum();					//find max (^*************************************************^)
 
+	int getTreeSize();
+
+    void init_json();
+    json_object* getJsonObject();
+
 private:
 	MovieNode *root;
+	json_object* Assignment6Output;
+	int operations;
+
+	int getTreeSize(MovieNode*);
 
 	void inorder_walk(MovieNode*);			//internal reccursive call
-	MovieNode* search(MovieNode*, std::string&);//recursive, and sub-tree version of search 
+	MovieNode* search(MovieNode*, std::string&);//recursive, and sub-tree version of search
 	MovieNode* minimum(MovieNode*);			//find min of specified sub-tree
 	MovieNode* maximum(MovieNode*);			//find max of specified sub-node
 	MovieNode* successor(MovieNode*);		//next incriment
 	MovieNode* predecessor(MovieNode*);		//next smaller
 	void transplant(MovieNode*, MovieNode*);//switches dangling trees on a parent
-	void delete_node(MovieNode*);			//removes a node
 	void delete_tree(MovieNode*);			//delete whole tree. Not purely in ~MovieTree() because it was easier to debugg.
 };
 
