@@ -1,7 +1,7 @@
 #include<iostream>
 #include<string>
-#include"json-c/json.h"
-#include "../include/MovieTree.h"
+//#include<json-c>
+#include "MovieTree.h"
 
 
 //******************
