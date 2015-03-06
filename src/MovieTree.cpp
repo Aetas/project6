@@ -57,6 +57,7 @@ MovieTree::MovieTree()
 {
 	root = nullptr;
 	Assignment6Output = json_object_new_object();
+	operations = 1;
 }
 
 //default destructs
@@ -66,19 +67,17 @@ MovieTree::~MovieTree()
 }
 
 //used to pass raw data from main() into the MovieTree's domain, eliminating creation of objects in main. Keeps it tidy (to me)
-void MovieTree::addRawNode(int& rank, std::string& ttl, int& yr, int& qtty)
+void MovieTree::addRawNode(int& rank, std::string& ttl, int& yr, int& qtty, json_object* traverseLog)
 {
 	MovieNode* n = new MovieNode(rank, ttl, yr, qtty);	//creates real ndoe
 	json_object* jtitle = json_object_new_string(ttl.c_str());
 
-	insert(n);	//finds the position it belongs in
+	insert(n, traverseLog);	//finds the position it belongs in
 }
 
 //search for a movie by title (external)
-MovieNode* MovieTree::search(std::string& ttl)
+MovieNode* MovieTree::search(std::string& ttl, json_object* traverseLog)
 {
-    operations++;
-
 	MovieNode* n = root;	//start at root, this is the external call
 	if (n == nullptr || n->title == ttl)	//basically, if the tree does not exist
 		return n;
@@ -89,9 +88,8 @@ MovieNode* MovieTree::search(std::string& ttl)
 }
 
 //same as above but internal
-MovieNode* MovieTree::search(MovieNode* n, std::string& ttl)
+MovieNode* MovieTree::search(MovieNode* n, std::string& ttl, json_object* traverseLog)
 {
-    operations++;
 
 	if (n == nullptr || n->title == ttl)
 		return n;
@@ -104,7 +102,6 @@ MovieNode* MovieTree::search(MovieNode* n, std::string& ttl)
 //a function a wrote for fun as prompted by the book. "This method is faster on most modern computers"
 MovieNode* MovieTree::iterative_search(std::string& ttl)
 {
-    operations++;
 
 	MovieNode* n = root;
 	while (n != nullptr && ttl != n->title)	//instead of recursion calls, just while() it until it is found
@@ -118,9 +115,8 @@ MovieNode* MovieTree::iterative_search(std::string& ttl)
 }
 
 //external call to print entire tree
-void MovieTree::inorder_walk()
+void MovieTree::inorder_walk(json_object* traverseLog)
 {
-    operations++;
 
 	MovieNode* n = root;	//start at root
 	if (n != nullptr || NULL)	//if there is still room to dive
@@ -134,7 +130,6 @@ void MovieTree::inorder_walk()
 //same as above but internal
 void MovieTree::inorder_walk(MovieNode* n)
 {
-	operations++;
 
 	if (n != nullptr || NULL)
 	{
@@ -146,7 +141,6 @@ void MovieTree::inorder_walk(MovieNode* n)
 
 int MovieTree::getTreeSize()
 {
-    operations++;
 
     MovieNode* n = root;
     if(n == NULL || n == nullptr) { //This node doesn't exist. Therefore there are no nodes in this 'subtree'
@@ -158,8 +152,6 @@ int MovieTree::getTreeSize()
 
 int MovieTree::getTreeSize(MovieNode* n)
 {
-    operations++;
-
     if(n == NULL || n == nullptr) { //This node doesn't exist. Therefore there are no nodes in this 'subtree'
         return 0;
     } else { //Add the size of the left and right trees, then add 1 (which is the current node)
@@ -170,7 +162,6 @@ int MovieTree::getTreeSize(MovieNode* n)
 //minimum from root (whole tree)
 MovieNode* MovieTree::minimum()
 {
-    operations++;
 
 	MovieNode* n = root;
 	while (n->left != nullptr || NULL)	//I don't think NULL is actually needed
@@ -181,7 +172,6 @@ MovieNode* MovieTree::minimum()
 //minimum for specified tree (sub-tree). same as above. Made for delete, really.
 MovieNode* MovieTree::minimum(MovieNode* n)
 {
-    operations++;
 
 	while (n->left != nullptr || NULL)
 		n = n->left;
@@ -191,7 +181,6 @@ MovieNode* MovieTree::minimum(MovieNode* n)
 //max from root (whole tree)
 MovieNode* MovieTree::maximum()
 {
-    operations++;
 
 	MovieNode* n = root;		//mirror of minimum, as is the nature of binary
 	while (n->right != nullptr)
@@ -202,7 +191,6 @@ MovieNode* MovieTree::maximum()
 //max from specified tree (sub-tree). same as above. made for delete
 MovieNode* MovieTree::maximum(MovieNode* n)
 {
-    operations++;
 
 	while (n->right != nullptr || NULL)
 		n = n->right;
@@ -212,7 +200,6 @@ MovieNode* MovieTree::maximum(MovieNode* n)
 //find next largest in the tree
 MovieNode* MovieTree::successor(MovieNode* n)
 {
-    operations++;
 
 	if (n->right != nullptr || NULL)
 		return minimum(n);			//if the right child is not empty, that is the successor
@@ -228,7 +215,6 @@ MovieNode* MovieTree::successor(MovieNode* n)
 // find next smallest in tree
 MovieNode* MovieTree::predecessor(MovieNode* n)
 {
-    operations++;
 
 	if (n->left != nullptr || NULL)
 		return maximum(n);			//if the left child exists, that is the predecessor
@@ -244,7 +230,6 @@ MovieNode* MovieTree::predecessor(MovieNode* n)
 //global insert from root
 void MovieTree::insert(MovieNode* new_node)
 {
-    operations++;
 
 	MovieNode* n = root;	//start at root
 	MovieNode* trail = nullptr;
@@ -268,7 +253,6 @@ void MovieTree::insert(MovieNode* new_node)
 //insert that starts in a specified sub tree. Same as above. Used pretty much only for delete and transplant f()'s
 void MovieTree::insert(MovieNode* start, MovieNode* new_node)
 {
-    operations++;
 
 	MovieNode* n = start;
 	MovieNode* trail = nullptr;
@@ -292,7 +276,6 @@ void MovieTree::insert(MovieNode* start, MovieNode* new_node)
 //lets the delete() magic happen
 void MovieTree::transplant(MovieNode* u, MovieNode* v)	//swaps u with v
 {
-    operations++;
 
 	if (u->parent == nullptr)	//if u was root, make v new root
 		root = v;
@@ -308,7 +291,6 @@ void MovieTree::transplant(MovieNode* u, MovieNode* v)	//swaps u with v
 //maddening delete function
 void MovieTree::delete_node(MovieNode* del_node)	//holy buttshit, Batman
 {
-    operations++;
 
 	if (del_node->left == nullptr)					//if there is no left child
 		transplant(del_node, del_node->right);		//swap left to right
@@ -346,3 +328,4 @@ json_object* MovieTree::getJsonObject()
 //******************
 //-END MOVIE_TREE
 //******************
+
