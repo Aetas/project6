@@ -1,6 +1,7 @@
 #ifndef MOVIETREE_H
 #define MOVIETREE_H
 
+#include<json/json.h>
 #include<string>
 
 struct MovieNode

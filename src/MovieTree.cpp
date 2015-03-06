@@ -1,7 +1,7 @@
 #include<iostream>
 #include<string>
 #include "MovieTree.h"
-#include<json-c/json.h>
+#include<json/json.h>
 //******************
 //-FREEEEEBIRD-
 //******************
@@ -152,7 +152,7 @@ int MovieTree::getTreeSize()
     if(n == NULL || n == nullptr) { //This node doesn't exist. Therefore there are no nodes in this 'subtree'
         return 0;
     } else { //Add the size of the left and right trees, then add 1 (which is the current node)
-        return size(n.left) + size(n.right) + 1;
+        return getTreeSize(n->left) + getTreeSize(n->right) + 1;
     }
 }
 
@@ -163,7 +163,7 @@ int MovieTree::getTreeSize(MovieNode* n)
     if(n == NULL || n == nullptr) { //This node doesn't exist. Therefore there are no nodes in this 'subtree'
         return 0;
     } else { //Add the size of the left and right trees, then add 1 (which is the current node)
-        return size(n.left) + size(n.right) + 1;
+        return getTreeSize(n->left) + getTreeSize(n->right) + 1;
     }
 }
 
