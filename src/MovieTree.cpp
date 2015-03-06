@@ -70,7 +70,6 @@ MovieTree::~MovieTree()
 void MovieTree::addRawNode(int& rank, std::string& ttl, int& yr, int& qtty, json_object* traverseLog)
 {
 	MovieNode* n = new MovieNode(rank, ttl, yr, qtty);	//creates real ndoe
-	json_object* jtitle = json_object_new_string(ttl.c_str());
 
 	insert(n, traverseLog);	//finds the position it belongs in
 }
@@ -79,24 +78,30 @@ void MovieTree::addRawNode(int& rank, std::string& ttl, int& yr, int& qtty, json
 MovieNode* MovieTree::search(std::string& ttl, json_object* traverseLog)
 {
 	MovieNode* n = root;	//start at root, this is the external call
+
+	json_object* jMovie = json_object_new_string(n->title.c_str());
+    json_object_array_add(traverseLog, jMovie);
+
 	if (n == nullptr || n->title == ttl)	//basically, if the tree does not exist
 		return n;
 	if (ttl.compare(n->title) < 0)			//choose which branch ot go into and call self again to repeat
-		return search(n->left, ttl);
+		return search(n->left, ttl, traverseLog);
 	else
-		return search(n->right, ttl);
+		return search(n->right, ttl, traverseLog);
 }
 
 //same as above but internal
 MovieNode* MovieTree::search(MovieNode* n, std::string& ttl, json_object* traverseLog)
 {
+    json_object* jMovie = json_object_new_string(n->title.c_str());
+    json_object_array_add(traverseLog, jMovie);
 
 	if (n == nullptr || n->title == ttl)
 		return n;
 	if (ttl.compare(n->title) < 0)
-		return search(n->left, ttl);
+		return search(n->left, ttl, traverseLog);
 	else
-		return search(n->right, ttl);
+		return search(n->right, ttl, traverseLog);
 }
 
 //a function a wrote for fun as prompted by the book. "This method is faster on most modern computers"
@@ -121,21 +126,25 @@ void MovieTree::inorder_walk(json_object* traverseLog)
 	MovieNode* n = root;	//start at root
 	if (n != nullptr || NULL)	//if there is still room to dive
 	{
-		inorder_walk(n->left);	//start small
+		inorder_walk(n->left, traverseLog);	//start small
+		json_object* jMovie = json_object_new_string(n->title.c_str());
+	    json_object_array_add(traverseLog, jMovie);
 		std::cout << n;			//custom ostream
-		inorder_walk(n->right);	//then step down the large
+		inorder_walk(n->right, traverseLog);	//then step down the large
 	}
 }
 
 //same as above but internal
-void MovieTree::inorder_walk(MovieNode* n)
+void MovieTree::inorder_walk(MovieNode* n, json_object* traverseLog)
 {
 
 	if (n != nullptr || NULL)
 	{
-		inorder_walk(n->left);
+		inorder_walk(n->left, traverseLog);
+		json_object* jMovie = json_object_new_string(n->title.c_str());
+	    json_object_array_add(traverseLog, jMovie);
 		std::cout << n;
-		inorder_walk(n->right);
+		inorder_walk(n->right, traverseLog);
 	}
 }
 
@@ -228,13 +237,15 @@ MovieNode* MovieTree::predecessor(MovieNode* n)
 }
 
 //global insert from root
-void MovieTree::insert(MovieNode* new_node)
+void MovieTree::insert(MovieNode* new_node, json_object* traverseLog)
 {
 
 	MovieNode* n = root;	//start at root
 	MovieNode* trail = nullptr;
 	while (n != nullptr)	//if the tree is not empty, find the new node's sub tree
 	{
+	    json_object* jMovie = json_object_new_string(n->title.c_str());
+	    json_object_array_add(traverseLog, jMovie);
 		trail = n;			//trailing pointer
 		if (new_node->title.compare(n->title) < 0)
 			n = n->left;	//if the new key is smaller, go left
