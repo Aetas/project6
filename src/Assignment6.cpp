@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
             cout << "Enter title:";
 			cin >> title;
 			temp = database->search(title);
-			if (temp == NULL || temp = nullptr)
+			if (temp == NULL || temp == nullptr)
 			{
 				cout << "Movie not found." << endl;
 				break;
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 			break;
 		}
 	}
-	ostream out_file("Assignment6Output.txt");
+	std::fstream out_file("Assignment6Output.txt");
 	out_file << database->getJsonObject();
 	if (temp != nullptr)
 		delete temp;
