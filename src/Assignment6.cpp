@@ -9,7 +9,7 @@
 #include<iostream>
 #include<fstream>
 #include<string>
-#include"../include/MovieTree.h"
+#include"MovieTree.h"
 
 using std::cin;
 using std::cout;
