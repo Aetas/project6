@@ -10,7 +10,7 @@
 #include<fstream>
 #include<string>
 #include"MovieTree.h"
-#include<json-c/json.h>
+#include<json/json.h>
 
 using std::cin;
 using std::cout;
