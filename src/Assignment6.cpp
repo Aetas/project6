@@ -22,8 +22,8 @@ int main(int argc, char* argv[])
 {
 	MovieTree* database = new MovieTree();
 	std::ifstream in_file;
-	if(argc >= 1)
-		in_file.open(argv[1]);
+	//if(argc >= 1)
+	//	in_file.open(argv[1]);
 
 	if (in_file.is_open())
 	{

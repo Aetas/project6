@@ -2,7 +2,7 @@
 #define MOVIETREE_H
 
 #include<string>
-#include"/usr/include/json-c/json.h"
+#include<json-c/json.h>
 
 struct MovieNode
 {
