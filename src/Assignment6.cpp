@@ -67,8 +67,10 @@ int main(int argc, char* argv[])
 		//could also -> while(!in_file.is_open()) {...requent new input... open()}
 	}
 	in_file.close();
+
 	int select = -1;
 	MovieNode * temp = nullptr;
+	string title = "";
 	while (select != 5)
 	{
 		cout << "======Main Menu=====" << endl
@@ -77,47 +79,43 @@ int main(int argc, char* argv[])
 			<< "3. Delete a movie" << endl
 			<< "4. Count movies in tree" << endl
 			<< "5. Quit" << endl;
+        select = 0;
 		cin >> select;
 		if (select == 1)	//rent a movie
         {
-            string title = "";
+            title = "";
 			cout << "Enter title:";
 			cin.ignore(10000, '\n');
 			std::getline(cin, title);
-			temp = database->iterative_search(title);
+			json_object* tRLog = json_object_new_array();
+			temp = database->iterative_search(title, tRLog);
 			if (temp == NULL)
 				cout << "Movie not found." << endl;
 			else if (temp->quantity == 0)
                 cout << "Movie out of stock." << endl;
 
-	//		if (temp != NULL || temp != nullptr)
-	//		{
-            if (temp != NULL || temp != nullptr)
+            if (temp != NULL && temp != nullptr)
+            {
 			    temp->quantity--;
+                string key = std::to_string(database->operations);  //delete this shit, too
 
-			    json_object* jROperation = json_object_new_string("rent");           //makes a value string with rent
-			    json_object* jRTitle = json_object_new_string(title.c_str());  //makes a value string with title
-			    //json_object* jRQuantity = json_object_new_int(temp->quantity);       //makes a value int with quantity
-			    json_object* jRWrapper = json_object_new_object();
+                json_object* jROperation = json_object_new_string("rent");           //makes a value string with rent
+                json_object* jRTitle = json_object_new_string(title.c_str());  //makes a value string with title
+                json_object* jRQuantity = json_object_new_int(temp->quantity);       //makes a value int with quantity
+                json_object* jRWrapper = json_object_new_object();
 
-			    json_object_object_add(jRWrapper, "operation", jROperation);
-			    json_object_object_add(jRWrapper, "parameter", jRTitle);
-                if (temp != NULL || temp != nullptr)
-                {
-                    json_object* jRQuantity = json_object_new_string(std::to_string(temp->quantity).c_str());
-                    json_object_object_add(jRWrapper, "output", jRQuantity);
-                }
-			    else
-			    {
-			        json_object* jRQuantity = json_object_new_string("0");
-			        json_object_object_add(jRWrapper, "output", jRQuantity);
-			    }
-
-                string key = std::to_string(database->operations);          //***THIS MAY CAUSE YOU ISSUES LATER*** requires c++11 standards. appears to compile on g++4.7 -std=c++0x
+                json_object_object_add(jRWrapper, "operation", jROperation);
+                json_object_object_add(jRWrapper, "parameter", jRTitle);
+                json_object_object_add(jRWrapper, "output", jRQuantity);
                 json_object_object_add(database->getJsonObject(), key.c_str(), jRWrapper);
                 database->operations++;
+            }
 
-            if (temp != NULL || temp != nullptr)
+                //string key = std::to_string(database->operations);          //***THIS MAY CAUSE YOU ISSUES LATER*** requires c++11 standards. appears to compile on g++4.7 -std=c++0x
+                //json_object_object_add(database->getJsonObject(), key.c_str(), jRWrapper);
+                //database->operations++;
+
+            if (temp != NULL && temp != nullptr)
             {
                     cout << "Movie has been rented." << endl
                     << "Movie Info:" << endl
@@ -126,10 +124,12 @@ int main(int argc, char* argv[])
                     << "Title:" << temp->title << endl
                     << "Year:" << temp->year << endl
                     << "Quantity:" << temp->quantity << endl;
+
                 if (temp->quantity == 0)
                 {
                     json_object* tDLog = json_object_new_array();
                     temp = database->search(title, tDLog);
+
                     json_object* jDWrapper = json_object_new_object();
                     json_object* jDOperation = json_object_new_string("delete");
                     json_object* jDTitle = json_object_new_string(temp->title.c_str());
@@ -147,6 +147,7 @@ int main(int argc, char* argv[])
                 }
             }
         }
+
 		if (select == 2)	//print inventory
 		{
 
@@ -168,14 +169,15 @@ int main(int argc, char* argv[])
 
         if (select == 3) //delete a movie
         {
+            temp = nullptr;
             cout << "Enter title:";
-            string title = "";
+            title = "";
             cin.ignore(1000, '\n');
 			std::getline(cin, title);
 
 			json_object* tDLog = json_object_new_array();
 
-			temp = database->search(title, tDLog);
+			temp = database->iterative_search(title, tDLog);
 			if (temp == NULL || temp == nullptr)
 			{
 				cout << "Movie not found." << endl;
@@ -185,6 +187,10 @@ int main(int argc, char* argv[])
 			    json_object* jDWrapper = json_object_new_object();
                 json_object* jDOperation = json_object_new_string("delete");
                 json_object* jDTitle = json_object_new_string(temp->title.c_str());
+
+                if (temp != nullptr && temp != NULL)    //probably redundant
+                    json_object_array_add(tDLog, jDTitle);  //adds final location to the array
+
                 json_object_object_add(jDWrapper, "operation", jDOperation);
                 json_object_object_add(jDWrapper, "parameter", jDTitle);
                 json_object_object_add(jDWrapper, "output", tDLog);
@@ -204,7 +210,7 @@ int main(int argc, char* argv[])
             int size = database->getTreeSize();
             json_object* jCWrapper = json_object_new_object();
             json_object* jOOperation = json_object_new_string("count");
-            json_object* jsize = json_object_new_int(size);
+            json_object* jsize = json_object_new_string(std::to_string(size).c_str());
 
             json_object_object_add(jCWrapper, "operation", jOOperation);
             json_object_object_add(jCWrapper, "output", jsize);

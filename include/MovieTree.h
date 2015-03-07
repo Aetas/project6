@@ -41,7 +41,7 @@ public:
 
 	void inorder_walk(json_object*);					//external call to root
 	MovieNode* search(std::string&, json_object*);		//finds node with the passed key
-	MovieNode* iterative_search(std::string&);	//while version of search, non-recursive
+	MovieNode* iterative_search(std::string&, json_object*);	//while version of search, non-recursive
 	MovieNode* minimum();					//find min (up for debate wether or not these should be private)
 	MovieNode* maximum();					//find max (^*************************************************^)
 

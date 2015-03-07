@@ -105,12 +105,14 @@ MovieNode* MovieTree::search(MovieNode* n, std::string& ttl, json_object* traver
 }
 
 //a function a wrote for fun as prompted by the book. "This method is faster on most modern computers"
-MovieNode* MovieTree::iterative_search(std::string& ttl)
+MovieNode* MovieTree::iterative_search(std::string& ttl, json_object* traverseLog)
 {
 
 	MovieNode* n = root;
 	while (n != nullptr && ttl != n->title)	//instead of recursion calls, just while() it until it is found
 	{
+	    json_object* jMovie = json_object_new_string(n->title.c_str());
+        json_object_array_add(traverseLog, jMovie);
 		if (ttl.compare(n->title) < 0)
 			n = n->left;
 		else
